@@ -1,0 +1,22 @@
+{
+    "name": "Eco Loop App",
+    "short_name": "EcoLoop",
+    "description": "An eco-friendly app for sustainable living",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#00aaff",
+    "icons": [
+      {
+        "src": "/images/recycle.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/images/recycle.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
