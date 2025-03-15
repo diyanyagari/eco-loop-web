@@ -2,7 +2,8 @@
 
 import { useUserDataContext } from "@/components/AuthProvider";
 import { Button } from "@/components/ui/button";
-import { House } from "lucide-react";
+import { House, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function BackToHome() {
@@ -17,9 +18,15 @@ export default function BackToHome() {
     router.replace("/me");
   };
   return (
-    <Button onClick={onClick} variant="ghost">
-      <House />
-      Kembali
-    </Button>
+    <div className="flex flex-col gap-4">
+      <Button onClick={onClick} variant="ghost">
+        <House />
+        Kembali
+      </Button>
+      <Button onClick={() => signOut()} variant="ghost">
+        <LogOut />
+        Logout
+      </Button>
+    </div>
   );
 }
