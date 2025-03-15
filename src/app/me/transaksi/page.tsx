@@ -1,62 +1,36 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { useGetTransaction } from "@/app/hook/useTransaction";
 import { useUserDataContext } from "@/components/AuthProvider";
 import ItemDecription from "@/components/ItemDecription";
 import { Button } from "@/components/ui/button";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
 } from "@/components/ui/drawer";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
-import { fetchData } from "@/lib/api-helper";
 import { Transaction } from "@/types/transaction";
 import { formatDateTime } from "@/utils/formatDateTime";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
-
-// ========================== fetcher ==========================
-
-const fetchTransaction = async (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string,
-  userId: string
-): Promise<PaginatedResponse<Transaction>> =>
-  fetchData(
-    `/transactions/${userId}?offset=${offset}&itemsPerPage=${itemsPerPage}&q=${searchQuery}`
-  );
-
-// ========================== fetcher ==========================
-
-export const useGetTransaction = (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string,
-  userId: string
-) =>
-  useQuery<PaginatedResponse<Transaction>>({
-    queryKey: ["transaction", offset, itemsPerPage, searchQuery],
-    queryFn: () => fetchTransaction(offset, itemsPerPage, searchQuery, userId),
-  });
 
 export default function MeTransaksiPage() {
   const [offset, setOffset] = React.useState(0);
@@ -156,26 +130,26 @@ export default function MeTransaksiPage() {
             <DrawerHeader>
               <DrawerTitle>Detail Setor Sampah</DrawerTitle>
               <DrawerDescription asChild>
-                  {selectedTrx ? (
-                    <div className="mt-2 space-y-2 dark:text-white text-[#202124]">
-                      <ItemDecription
-                        title="Tanggal Setor"
-                        value={formatDateTime(selectedTrx?.created_at)}
-                      />
-                      <ItemDecription
-                        title="Tempat Bank Sampah"
-                        value={selectedTrx?.location?.name}
-                      />
-                      <ItemDecription
-                        title="Nama Penyetor"
-                        value={selectedTrx?.user?.name}
-                      />
-                    </div>
-                  ) : (
-                    <p suppressHydrationWarning className="text-gray-500">
-                      Pilih bank sampah untuk melihat detail.
-                    </p>
-                  )}
+                {selectedTrx ? (
+                  <div className="mt-2 space-y-2 dark:text-white text-[#202124]">
+                    <ItemDecription
+                      title="Tanggal Setor"
+                      value={formatDateTime(selectedTrx?.created_at)}
+                    />
+                    <ItemDecription
+                      title="Tempat Bank Sampah"
+                      value={selectedTrx?.location?.name}
+                    />
+                    <ItemDecription
+                      title="Nama Penyetor"
+                      value={selectedTrx?.user?.name}
+                    />
+                  </div>
+                ) : (
+                  <p suppressHydrationWarning className="text-gray-500">
+                    Pilih bank sampah untuk melihat detail.
+                  </p>
+                )}
               </DrawerDescription>
             </DrawerHeader>
             <DrawerFooter>

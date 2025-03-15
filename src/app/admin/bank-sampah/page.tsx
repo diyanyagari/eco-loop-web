@@ -2,6 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import {
+  useCreateBank,
+  useDeleteBank,
+  useGetBank,
+  useUpdateBank,
+} from "@/app/hook/useBank";
 import { useUserDataContext } from "@/components/AuthProvider";
 import ConfirmModal from "@/components/ConfirmModal";
 import ItemDecription from "@/components/ItemDecription";
@@ -31,62 +37,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  createData,
-  deleteData,
-  fetchData,
-  updateData,
-} from "@/lib/api-helper";
 import { queryClient } from "@/lib/utils";
 import { Bank } from "@/types/bank";
 import { ErrorResponse } from "@/types/errorResponse";
-import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { CirclePlus } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { QRCodeCanvas } from "qrcode.react";
-
-// ========================== fetcher ==========================
-
-const fetchBank = async (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-): Promise<PaginatedResponse<Bank>> =>
-  fetchData(
-    `/bank-location?offset=${offset}&itemsPerPage=${itemsPerPage}&q=${searchQuery}`
-  );
-
-const createBank = async (newBank: Bank): Promise<PaginatedResponse<Bank>> =>
-  createData("/bank-location", newBank);
-
-const updateBank = async (
-  updatedBank: Bank
-): Promise<PaginatedResponse<Bank>> => {
-  const path = `/bank-location/${updatedBank.id}`;
-  return updateData(path, updatedBank);
-};
-
-const deleteBank = async (bankId: string): Promise<void> => {
-  const path = `/bank-location/${bankId}`;
-  return deleteData(path);
-};
-
-// ========================== fetcher ==========================
-
-export const useGetBank = (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-) =>
-  useQuery<PaginatedResponse<Bank>>({
-    queryKey: ["bank", offset, itemsPerPage, searchQuery],
-    queryFn: () => fetchBank(offset, itemsPerPage, searchQuery),
-  });
-
-const CreateNewBank = () => useMutation({ mutationFn: createBank });
-const UpdateBank = () => useMutation({ mutationFn: updateBank });
-const DeleteBank = () => useMutation({ mutationFn: deleteBank });
 
 export default function AdminBankPage() {
   const [offset, setOffset] = React.useState(0);
@@ -108,9 +65,9 @@ export default function AdminBankPage() {
   const [isDeleteDrawerOpen, setIsDeleteDrawerOpen] = React.useState(false);
 
   const { data: responseData } = useGetBank(offset, itemsPerPage, searchQuery);
-  const { mutateAsync: createBank } = CreateNewBank();
-  const { mutateAsync: updateBank } = UpdateBank();
-  const { mutateAsync: deleteBank } = DeleteBank();
+  const { mutateAsync: createBank } = useCreateBank();
+  const { mutateAsync: updateBank } = useUpdateBank();
+  const { mutateAsync: deleteBank } = useDeleteBank();
 
   const prevPage = () => {
     if (offset > 0) {

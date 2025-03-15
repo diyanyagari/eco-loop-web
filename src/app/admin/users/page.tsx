@@ -2,6 +2,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useGetFamilies } from "@/app/hook/useFamily";
+import {
+  useCreateUser,
+  useDeleteUser,
+  useGetUsers,
+  useUpdateUser,
+} from "@/app/hook/useUser";
 import { useUserDataContext } from "@/components/AuthProvider";
 import ConfirmModal from "@/components/ConfirmModal";
 import ItemDecription from "@/components/ItemDecription";
@@ -52,49 +59,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { CirclePlus } from "lucide-react";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useGetFamilies } from "../family/page";
-
-// ========================== fetcher ==========================
-
-const fetchUsers = async (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-): Promise<PaginatedResponse<Users>> =>
-  fetchData(
-    `/users?offset=${offset}&itemsPerPage=${itemsPerPage}&q=${searchQuery}`
-  );
-
-const createUser = async (newUser: Users): Promise<PaginatedResponse<Users>> =>
-  createData("/users", newUser);
-
-const updateUser = async (
-  updatedUser: Users
-): Promise<PaginatedResponse<Users>> => {
-  const path = `/users/${updatedUser.id}`;
-  return updateData(path, updatedUser);
-};
-
-const deleteUser = async (userId: string): Promise<void> => {
-  const path = `/users/${userId}`;
-  return deleteData(path);
-};
-
-// ========================== fetcher ==========================
-
-const useGetUsers = (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-) =>
-  useQuery<PaginatedResponse<Users>>({
-    queryKey: ["users", offset, itemsPerPage, searchQuery],
-    queryFn: () => fetchUsers(offset, itemsPerPage, searchQuery),
-  });
-
-const CreateNewUser = () => useMutation({ mutationFn: createUser });
-const UpdateUser = () => useMutation({ mutationFn: updateUser });
-const DeleteUser = () => useMutation({ mutationFn: deleteUser });
 
 export default function AdminUsersPage() {
   const [offset, setOffset] = React.useState(0);
@@ -115,9 +79,9 @@ export default function AdminUsersPage() {
 
   const { data: responseData } = useGetUsers(offset, itemsPerPage, searchQuery);
   const { data: responseDataFamily } = useGetFamilies(0, 1000, "");
-  const { mutateAsync: createUser } = CreateNewUser();
-  const { mutateAsync: updateUser } = UpdateUser();
-  const { mutateAsync: deleteUser } = DeleteUser();
+  const { mutateAsync: createUser } = useCreateUser();
+  const { mutateAsync: updateUser } = useUpdateUser();
+  const { mutateAsync: deleteUser } = useDeleteUser();
 
   const prevPage = () => {
     if (offset > 0) {

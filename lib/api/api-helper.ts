@@ -1,5 +1,6 @@
-import { getSession } from 'next-auth/react';
-import { ErrorResponse } from 'types/errorResponse';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorResponse } from "@/types/errorResponse";
+import { getSession } from "next-auth/react";
 
 // Helper function to handle API requests
 const apiRequest = async (
@@ -8,19 +9,19 @@ const apiRequest = async (
   data?: any
 ): Promise<any> => {
   const session = await getSession();
-  const token = session?.user.token; // Retrieve the token once
+  const token = session?.token; // Retrieve the token once
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const options: RequestInit = {
     method,
-    headers
+    headers,
   };
 
   if (data) {
@@ -33,15 +34,15 @@ const apiRequest = async (
   );
 
   if (!res.ok) {
-    const errorBody = await res.json().catch(() => '');
+    const errorBody = await res.json().catch(() => "");
     const error: ErrorResponse = {
-      name: 'ApiError',
+      name: "ApiError",
       message: `Failed to ${method.toLowerCase()} data`,
       details: {
         status: res.status,
         message:
-          res.status === 400 ? errorBody.message : 'Unknown error occurred'
-      }
+          res.status === 400 ? errorBody.message : "Unknown error occurred",
+      },
     };
     throw error;
   }
@@ -50,9 +51,9 @@ const apiRequest = async (
 };
 
 // Exported functions
-export const fetchData = (path: string) => apiRequest('GET', path);
+export const fetchData = (path: string) => apiRequest("GET", path);
 export const createData = (path: string, data: any) =>
-  apiRequest('POST', path, data);
+  apiRequest("POST", path, data);
 export const updateData = (path: string, data: any) =>
-  apiRequest('PUT', path, data);
-export const deleteData = (path: string) => apiRequest('DELETE', path);
+  apiRequest("PUT", path, data);
+export const deleteData = (path: string) => apiRequest("DELETE", path);

@@ -2,6 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import {
+  useCreateFamily,
+  useDeleteFamily,
+  useGetFamilies,
+  useUpdateFamily,
+} from "@/app/hook/useFamily";
 import { useUserDataContext } from "@/components/AuthProvider";
 import ConfirmModal from "@/components/ConfirmModal";
 import ItemDecription from "@/components/ItemDecription";
@@ -45,52 +51,6 @@ import { CirclePlus } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-// ========================== fetcher ==========================
-
-const fetchFamily = async (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-): Promise<PaginatedResponse<Families>> =>
-  fetchData(
-    `/family?offset=${offset}&itemsPerPage=${itemsPerPage}&q=${searchQuery}`
-  );
-
-const createFamily = async (
-  newFamily: Families
-): Promise<PaginatedResponse<Families>> => createData("/family", newFamily);
-
-const updateFamily = async (
-  updatedFamily: Families
-): Promise<PaginatedResponse<Families>> => {
-  const path = `/family/${updatedFamily.kk_number}`;
-  const payload = {
-    family_name: updatedFamily.family_name,
-  };
-  return updateData(path, payload);
-};
-
-const deleteFamily = async (familyId: string): Promise<void> => {
-  const path = `/family/${familyId}`;
-  return deleteData(path);
-};
-
-// ========================== fetcher ==========================
-
-export const useGetFamilies = (
-  offset: number,
-  itemsPerPage: number,
-  searchQuery: string
-) =>
-  useQuery<PaginatedResponse<Families>>({
-    queryKey: ["families", offset, itemsPerPage, searchQuery],
-    queryFn: () => fetchFamily(offset, itemsPerPage, searchQuery),
-  });
-
-const CreateNewFamily = () => useMutation({ mutationFn: createFamily });
-const UpdateFamily = () => useMutation({ mutationFn: updateFamily });
-const DeleteFamily = () => useMutation({ mutationFn: deleteFamily });
-
 export default function AdminFamilyPage() {
   const [offset, setOffset] = React.useState(0);
   const [itemsPerPage] = React.useState(5);
@@ -113,9 +73,9 @@ export default function AdminFamilyPage() {
     itemsPerPage,
     searchQuery
   );
-  const { mutateAsync: createFamily } = CreateNewFamily();
-  const { mutateAsync: updateFamily } = UpdateFamily();
-  const { mutateAsync: deleteFamily } = DeleteFamily();
+  const { mutateAsync: createFamily } = useCreateFamily();
+  const { mutateAsync: updateFamily } = useUpdateFamily();
+  const { mutateAsync: deleteFamily } = useDeleteFamily();
 
   const prevPage = () => {
     if (offset > 0) {
@@ -269,22 +229,22 @@ export default function AdminFamilyPage() {
             <DrawerHeader>
               <DrawerTitle>Family Detail</DrawerTitle>
               <DrawerDescription asChild>
-                  {selectedFamily ? (
-                    <div className="mt-2 space-y-2 dark:text-white text-[#202124]">
-                      <ItemDecription
-                        title="No. KK"
-                        value={selectedFamily.kk_number}
-                      />
-                      <ItemDecription
-                        title="Nama Keluarga"
-                        value={selectedFamily.family_name}
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-gray-500">
-                      Pilih keluarga untuk melihat detail.
-                    </p>
-                  )}
+                {selectedFamily ? (
+                  <div className="mt-2 space-y-2 dark:text-white text-[#202124]">
+                    <ItemDecription
+                      title="No. KK"
+                      value={selectedFamily.kk_number}
+                    />
+                    <ItemDecription
+                      title="Nama Keluarga"
+                      value={selectedFamily.family_name}
+                    />
+                  </div>
+                ) : (
+                  <p className="text-gray-500">
+                    Pilih keluarga untuk melihat detail.
+                  </p>
+                )}
               </DrawerDescription>
             </DrawerHeader>
             <DrawerFooter>
