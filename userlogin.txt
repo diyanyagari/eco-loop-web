@@ -1,0 +1,5 @@
+{
+    "identifier": "ecoadmin",
+    "password": "vxQ9ORifR3O7F1nhF56k4K5",
+    "type": 1
+}

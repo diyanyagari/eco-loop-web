@@ -1,10 +1,14 @@
 import { getAuthUser } from "@/lib/auth";
-import HomePage from "./home/page";
+import MeHomePage from "./HomeMe";
 import { authCheck } from "@/lib/utils";
 
-export default async function Home() {
+export default async function UserPage() {
   const session = await getAuthUser();
   authCheck(session, ["user"]);
 
-  return <HomePage />;
+  return (
+    <div>
+      <MeHomePage />
+    </div>
+  );
 }
