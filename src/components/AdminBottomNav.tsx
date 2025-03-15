@@ -20,7 +20,7 @@ export default function AdminBottomNav({
   const router = useRouter();
 
   return (
-    <div className="fixed bottom-0 left-0 w-full border-t shadow-md flex justify-around p-2">
+    <div className="fixed bottom-0 left-0 w-full border-t shadow-md flex justify-around px-2 pt-2 pb-8">
       <div className="w-full flex justify-around max-w-sm">
         {navItems?.map(({ name, icon: Icon, path }) => {
           const isActive = pathname === path;
