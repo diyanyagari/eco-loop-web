@@ -61,10 +61,17 @@ export default function MeHomePage() {
         throw new Error("Gagal mengambil data bank - Data tidak ditemukan");
       }
 
-      const bankData: Bank = response.data[0];
-      setDataBank(bankData);
-      setIsValidQR(true);
-      setIsDrawerOpen(true);
+      if (response.data.length > 0) {
+        const bankData: Bank = response.data[0];
+        setDataBank(bankData);
+        setIsValidQR(true);
+        setIsDrawerOpen(true);
+      } else {
+        toast.warning("Bank sampah tidak ditemukan", {
+          position: "top-center",
+        });
+        setIsDrawerOpen(false);
+      }
     } catch (err) {
       console.error((err as Error).message);
     } finally {
