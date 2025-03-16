@@ -43,6 +43,9 @@ export const useGetTransaction = (
   useQuery<PaginatedResponse<Transaction>>({
     queryKey: ["transaction", offset, itemsPerPage, searchQuery],
     queryFn: () => fetchTransaction(offset, itemsPerPage, searchQuery, userId),
+    // staleTime: 5 * 60 * 1000,
+    // placeholderData: (previousData) => previousData,
+    // enabled: !!userId, 
   });
 
 // export const useCreateFamily = () => useMutation({ mutationFn: createFamily });

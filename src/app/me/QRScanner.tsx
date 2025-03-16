@@ -28,29 +28,6 @@ export default function QRScanner({ onScan }: QRScannerProps) {
     setIsScanning(true);
 
     try {
-    //   const permissionStatus = await navigator.permissions.query({
-    //     name: "camera" as PermissionName,
-    //   });
-
-    //   if (permissionStatus.state === "denied") {
-    //     alert(
-    //       "Camera access is blocked. Please enable it in browser settings."
-    //     );
-    //     setIsScanning(false);
-    //     return;
-    //   }
-
-    //   // If permission is not granted yet, request access
-    //   if (permissionStatus.state === "prompt") {
-    //     try {
-    //       await navigator.mediaDevices.getUserMedia({ video: true });
-    //     } catch (error) {
-    //       alert("Camera permission denied.");
-    //       setIsScanning(false);
-    //       return;
-    //     }
-    //   }
-
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter(
         (device) => device.kind === "videoinput"
@@ -73,6 +50,7 @@ export default function QRScanner({ onScan }: QRScannerProps) {
 
       const selectedDeviceId = selectedDevice.deviceId;
       const codeReader = new BrowserMultiFormatReader();
+
       const controls = await codeReader.decodeFromVideoDevice(
         selectedDeviceId,
         videoRef.current,
@@ -105,12 +83,17 @@ export default function QRScanner({ onScan }: QRScannerProps) {
     <div className="flex flex-col justify-center gap-8 items-center h-full">
       <video
         ref={videoRef}
-        className={`w-full h-64 max-w-md ${isScanning ? "block" : "hidden"}`}
+        className={`w-full h-80 max-w-md ${isScanning ? "block" : "hidden"}`}
       />
       <div
-        className={`relative w-full h-64 ${isScanning ? "hidden" : "block"}`}
+        className={`relative w-full h-80 ${isScanning ? "hidden" : "block"}`}
       >
-        <Image src="/images/recycle.png" fill alt="recycle" />
+        <Image
+          src="/images/recycle.png"
+          fill
+          alt="recycle"
+          style={{ objectFit: "contain" }}
+        />
       </div>
       <Button
         onClick={isScanning ? stopScanning : startScanning}

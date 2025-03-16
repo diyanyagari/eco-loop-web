@@ -27,7 +27,7 @@ export async function fetchUserProfile(token: string | undefined) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        cache: "no-store", // Hindari cache agar selalu update
+        next: { revalidate: 300 },
       }
     );
 

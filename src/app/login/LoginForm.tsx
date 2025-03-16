@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import { fetchUserProfile, getAuthUser } from "@/lib/auth";
+import ThemeSwitch from "./ThemeSwitch";
 
 type LoginFormValues = {
   identifier: string;
@@ -43,16 +40,17 @@ export default function LoginPage() {
     }
 
     const session = await getSession();
-    const userProfile = await fetchUserProfile(session?.token);
     if (!session || !session.user) {
       setError("Failed to get user session");
       return;
     }
 
-    if (userProfile?.role === "admin") {
-      router.replace("/admin");
-    } else {
+    const isNik = /^\d{16}$/.test(data.identifier);
+
+    if (isNik) {
       router.replace("/me");
+    } else {
+      router.replace("/admin");
     }
   };
 
@@ -73,12 +71,7 @@ export default function LoginPage() {
       <div className="absolute right-4 top-4">
         <ThemeSwitch />
       </div>
-      <motion.div
-        className="w-full max-w-md p-6 rounded-lg shadow-md"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="w-full max-w-md p-6 rounded-lg shadow-sm animate-fadeInUp will-change-transform">
         <h2 className="text-xl font-semibold text-center">Login</h2>
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
@@ -88,34 +81,20 @@ export default function LoginPage() {
             type="text"
             placeholder="Username/NIK"
             required
+            autoComplete="off"
           />
           <Input
             {...register("password")}
             type="password"
             placeholder="Password"
             required
+            autoComplete="off"
           />
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Logging in..." : "Login"}
           </Button>
         </form>
-      </motion.div>
+      </div>
     </div>
-  );
-}
-
-function ThemeSwitch() {
-  const { setTheme, theme, systemTheme } = useTheme();
-  const changeTheme = () => {
-    const newTheme =
-      (theme === "system" ? systemTheme : theme) === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-  };
-  return (
-    <Button onClick={changeTheme} variant="outline" size="icon">
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
   );
 }

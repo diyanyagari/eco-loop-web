@@ -12,10 +12,10 @@ export default async function MeLayout({
 
   return (
     <div className="relative min-h-screen flex justify-center">
-      {/* Wrapper dengan max-width */}
       <div className="w-full max-w-sm min-h-screen shadow-md">
-        {/* <Header /> */}
-        <div className="px-4">{children}</div>
+        <div className="px-4">
+          {children}
+        </div>
         <MeNavbar />
       </div>
     </div>

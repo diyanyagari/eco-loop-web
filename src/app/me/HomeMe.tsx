@@ -16,11 +16,8 @@ import { Bank } from "@/types/bank";
 import React from "react";
 import { toast } from "sonner";
 import QRScanner from "./QRScanner";
-import { useSession } from "next-auth/react";
 
 export default function MeHomePage() {
-  const [resultQR, setResultQR] = React.useState<Bank | null>(null);
-  const [isValidQR, setIsValidQR] = React.useState<boolean>(false);
   const [dataBank, setDataBank] = React.useState<Bank>();
   const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
   const [dataWeight, setDataWeight] = React.useState<number>(1.0);
@@ -58,13 +55,15 @@ export default function MeHomePage() {
     try {
       const response = await fetchData(`/bank-location/${qrId}`);
       if (!response.success || !response.data || response.data.length === 0) {
+        toast.warning("Bank sampah tidak ditemukan", {
+          position: "top-center",
+        });
         throw new Error("Gagal mengambil data bank - Data tidak ditemukan");
       }
 
       if (response.data.length > 0) {
         const bankData: Bank = response.data[0];
         setDataBank(bankData);
-        setIsValidQR(true);
         setIsDrawerOpen(true);
       } else {
         toast.warning("Bank sampah tidak ditemukan", {
@@ -82,8 +81,6 @@ export default function MeHomePage() {
   const closeDrawer = () => {
     setIsDrawerOpen(false);
     setDataBank(undefined);
-    setIsValidQR(false);
-    setResultQR(null);
   };
 
   const increaseWeight = () => {
@@ -108,8 +105,8 @@ export default function MeHomePage() {
   };
 
   return (
-    <div className="p-6 h-[calc(100dvh-100px)]">
-      <h1 className="text-xl font-bold mb-4 text-center">Bank Sampah Aseek</h1>
+    <div className="py-6 h-[calc(100dvh-100px)]">
+      <h1 className="text-xl px-4 font-bold mb-4 text-center">Bank Sampah Aseek</h1>
       <QRScanner
         onScan={(data) => {
           try {
@@ -130,7 +127,6 @@ export default function MeHomePage() {
 
               // Ensure it contains `qr_code`
               if ("qr_code" in parsedData) {
-                setResultQR(parsedData);
                 fetchBankData(parsedData.qr_code);
               } else {
                 toast.error("Maaf, QR tidak valid!", {
@@ -142,10 +138,6 @@ export default function MeHomePage() {
                 position: "top-center",
               });
             }
-
-            // const parsedData: Bank = JSON.parse(data);
-            // setResultQR(parsedData);
-            // fetchBankData(parsedData.qr_code);
           } catch (error) {
             toast.warning("Maaf, QR tidak valid!", {
               position: "top-center",
@@ -160,7 +152,6 @@ export default function MeHomePage() {
         open={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
         onClose={() => {
-          //   setSelectedFamily(undefined);
           setDataWeight(1.0);
         }}
         dismissible
@@ -207,24 +198,24 @@ export default function MeHomePage() {
                 >
                   1 Kg
                 </Button>
-                <Button
+                {/* <Button
                   onClick={() => setWeightByNumber(2)}
                   className="aspect-square p-3 w-14 h-14 text-lg"
                 >
                   2 Kg
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => setWeightByNumber(3)}
                   className="aspect-square p-3 w-14 h-14 text-lg"
                 >
                   3 Kg
                 </Button>
-                <Button
+                {/* <Button
                   onClick={() => setWeightByNumber(4)}
                   className="aspect-square p-3 w-14 h-14 text-lg"
                 >
                   4 Kg
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => setWeightByNumber(5)}
                   className="aspect-square p-3 w-14 h-14 text-lg"
