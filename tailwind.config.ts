@@ -1,8 +1,9 @@
 import type { Config } from "tailwindcss";
 import shadcnPlugin from "tailwindcss-animate";
+import scrollbarHide from 'tailwind-scrollbar-hide'
 
 export default {
-  darkMode: "media",
+  // darkMode: "media",
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -48,5 +49,5 @@ export default {
       },
     },
   },
-  plugins: [shadcnPlugin],
+  plugins: [scrollbarHide, shadcnPlugin],
 } satisfies Config;

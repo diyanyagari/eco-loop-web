@@ -1,236 +1,98 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useUserDataContext } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import { createData, fetchData } from "@/lib/api-helper";
-import { Bank } from "@/types/bank";
+import { Card, CardContent } from "@/components/ui/card";
+import { SvgShimmer } from "@/shared/components/SvgComponents";
+import { Leaf, X, Check } from "lucide-react";
+import dynamic from "next/dynamic";
 import React from "react";
-import { toast } from "sonner";
-import QRScanner from "./QRScanner";
+import SectionActivity from "./homepageComponents/SectionActivity";
+import SectionCategories from "./homepageComponents/SectionCategories";
+
+const SectionTrashScanner = dynamic(
+  () => import("./homepageComponents/SectionTrashScanner"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[260px] w-full bg-white mb-6 flex flex-col gap-6 border py-6 rounded-3xl shadow-sm">
+        <div className="p-6">
+          <SvgShimmer className="w-full mb-4 h-6 rounded-lg" />
+          <SvgShimmer className="w-full mb-6 h-12 rounded-lg" />
+          <SvgShimmer className="w-full h-10 rounded-lg" />
+        </div>
+      </div>
+    ),
+  }
+);
 
 export default function MeHomePage() {
-  const [dataBank, setDataBank] = React.useState<Bank>();
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState<boolean>(false);
-  const [dataWeight, setDataWeight] = React.useState<number>(1.0);
-  const { setGLoading, user } = useUserDataContext();
-
-  const submitTransactionData = async () => {
-    setGLoading(true);
-    try {
-      const payload = {
-        userId: user.id,
-        locationId: dataBank?.id,
-        weight: dataWeight,
-      };
-      const response = await createData(`/transactions`, payload);
-      if (!response.success || !response.data || response.data.length === 0) {
-        toast.warning("Bank sampah tidak ditemukan", {
-          position: "top-center",
-        });
-        throw new Error("Gagal mengambil data bank - Data tidak ditemukan");
-      }
-
-      closeDrawer();
-    } catch (err) {
-      console.error((err as Error).message);
-      toast.error("Terjadi Kesalahan", {
-        position: "top-center",
-      });
-    } finally {
-      setGLoading(false);
-    }
-  };
-
-  const fetchBankData = async (qrId: string) => {
-    setGLoading(true);
-    try {
-      const response = await fetchData(`/bank-location/${qrId}`);
-      if (!response.success || !response.data || response.data.length === 0) {
-        toast.warning("Bank sampah tidak ditemukan", {
-          position: "top-center",
-        });
-        throw new Error("Gagal mengambil data bank - Data tidak ditemukan");
-      }
-
-      if (response.data.length > 0) {
-        const bankData: Bank = response.data[0];
-        setDataBank(bankData);
-        setIsDrawerOpen(true);
-      } else {
-        toast.warning("Bank sampah tidak ditemukan", {
-          position: "top-center",
-        });
-        setIsDrawerOpen(false);
-      }
-    } catch (err) {
-      console.error((err as Error).message);
-    } finally {
-      setGLoading(false);
-    }
-  };
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
-    setDataBank(undefined);
-  };
-
-  const increaseWeight = () => {
-    if (dataWeight < 4.9) {
-      setDataWeight((prev) => prev + 0.1);
-    }
-  };
-
-  const decreaseWeight = () => {
-    if (dataWeight > 0.1) {
-      setDataWeight((prev) => prev - 0.1);
-    }
-  };
-
-  const setWeightByNumber = (value: number) => {
-    setDataWeight((prev) => {
-      const decimalPart = prev % 1;
-      const count = value + decimalPart;
-      if (count > 5.0) return 5.0;
-      return value + decimalPart;
-    });
-  };
+  const [scanStatus, setScanStatus] = React.useState<
+    null | "success" | "failed"
+  >(null);
 
   return (
-    <div className="py-6 h-[calc(100dvh-100px)]">
-      <h1 className="text-xl px-4 font-bold mb-4 text-center">Bank Sampah Aseek</h1>
-      <QRScanner
-        onScan={(data) => {
-          try {
-            if (!data) return;
+    <div className="relative">
+      <div className="fixed left-0 bg-emerald-50 top-0 w-full mb-4 flex items-center justify-center">
+        <div className="max-w-sm w-full p-4 pt-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-800">EcoRecycle</h1>
+          <div className="flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100">
+              <Leaf className="h-4 w-4 text-emerald-500" />
+            </div>
+            <span className="font-medium text-emerald-500">495 pts</span>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col p-4 pt-20">
+        {/* <div className="w-full mb-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-800">EcoRecycle</h1>
+          <div className="flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100">
+              <Leaf className="h-4 w-4 text-emerald-500" />
+            </div>
+            <span className="font-medium text-emerald-500">495 pts</span>
+          </div>
+        </div> */}
+        <SectionCategories />
 
-            // Function to check if a string is valid JSON
-            const isJSON = (str: string) => {
-              try {
-                const parsed = JSON.parse(str);
-                return typeof parsed === "object" && parsed !== null;
-              } catch (e) {
-                return false;
-              }
-            };
+        <SectionTrashScanner />
 
-            if (isJSON(data)) {
-              const parsedData = JSON.parse(data);
-
-              // Ensure it contains `qr_code`
-              if ("qr_code" in parsedData) {
-                fetchBankData(parsedData.qr_code);
-              } else {
-                toast.error("Maaf, QR tidak valid!", {
-                  position: "top-center",
-                });
-              }
-            } else {
-              toast.error("Maaf, QR tidak valid!", {
-                position: "top-center",
-              });
-            }
-          } catch (error) {
-            toast.warning("Maaf, QR tidak valid!", {
-              position: "top-center",
-            });
-            console.error("Failed to parse QR data", error);
-          }
-        }}
-      />
-
-      {/* Bottom Drawer */}
-      <Drawer
-        open={isDrawerOpen}
-        onOpenChange={setIsDrawerOpen}
-        onClose={() => {
-          setDataWeight(1.0);
-        }}
-        dismissible
-      >
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>{dataBank?.name}</DrawerTitle>
-            <DrawerDescription>{dataBank?.address}</DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <div className="flex flex-col gap-5">
-              <div className="flex flex-col gap-10">
-                <div className="flex flex-row items-center gap-5 justify-center">
-                  <Button
-                    onClick={decreaseWeight}
-                    className="text-4xl"
-                    variant="ghost"
-                    disabled={dataWeight < 0.1}
-                  >
-                    -
-                  </Button>
-                  <div className="relative">
-                    <div className="absolute left-1/2 -translate-x-1/2 -top-9">
-                      Kg
-                    </div>
-                    <div className="dark:bg-white flex items-center justify-center tracking-wider font-semibold text-lg p-4 aspect-square h-16 w-16 rounded-2xl dark:text-[#202122] bg-[#020617]">
-                      {dataWeight.toFixed(1)}
-                    </div>
-                  </div>
-                  <Button
-                    onClick={increaseWeight}
-                    className="text-4xl"
-                    variant="ghost"
-                    disabled={dataWeight > 4.9}
-                  >
-                    +
-                  </Button>
+        {scanStatus && (
+          <Card
+            className={`mb-6 overflow-hidden rounded-3xl border-none ${
+              scanStatus === "success" ? "bg-green-50" : "bg-red-50"
+            } shadow-sm`}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div
+                  className={`mr-4 flex h-12 w-12 items-center justify-center rounded-full ${
+                    scanStatus === "success" ? "bg-green-100" : "bg-red-100"
+                  }`}
+                >
+                  {scanStatus === "success" ? (
+                    <Check className="h-6 w-6 text-green-500" />
+                  ) : (
+                    <X className="h-6 w-6 text-red-500" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">
+                    {scanStatus === "success" ? "Success!" : "Failed!"}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {scanStatus === "success"
+                      ? "Your recycling deposit has been recorded successfully."
+                      : "Unable to scan QR code. Please try again."}
+                  </p>
                 </div>
               </div>
-              <div className="flex flex-row gap-7 items-center mt-4 justify-center">
-                <Button
-                  onClick={() => setWeightByNumber(1)}
-                  className="aspect-square p-3 w-14 h-14 text-lg"
-                >
-                  1 Kg
-                </Button>
-                {/* <Button
-                  onClick={() => setWeightByNumber(2)}
-                  className="aspect-square p-3 w-14 h-14 text-lg"
-                >
-                  2 Kg
-                </Button> */}
-                <Button
-                  onClick={() => setWeightByNumber(3)}
-                  className="aspect-square p-3 w-14 h-14 text-lg"
-                >
-                  3 Kg
-                </Button>
-                {/* <Button
-                  onClick={() => setWeightByNumber(4)}
-                  className="aspect-square p-3 w-14 h-14 text-lg"
-                >
-                  4 Kg
-                </Button> */}
-                <Button
-                  onClick={() => setWeightByNumber(5)}
-                  className="aspect-square p-3 w-14 h-14 text-lg"
-                >
-                  5 Kg
-                </Button>
-              </div>
-              <Button onClick={submitTransactionData}>Simpan</Button>
-              <Button onClick={closeDrawer} variant="ghost">
-                Tutup
-              </Button>
-            </div>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+            </CardContent>
+          </Card>
+        )}
+
+        <SectionActivity />
+      </div>
     </div>
   );
 }

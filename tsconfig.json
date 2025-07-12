@@ -22,6 +22,7 @@
       "@/lib/*": ["./src/lib/*"],
       "@/types/*": ["./types/*"],
       "@/next-auth/*": ["./src/app/api/auth/[...nextauth]/*"],
+      "@/locales/*": ["./locales/*"],
       "@/*": ["./src/*"]
     }
   },

@@ -1,0 +1,14 @@
+{
+  "greeting": "Hello",
+  "login": {
+    "title": "Login to your account",
+    "button": "Sign In"
+  },
+  "homepage": {
+    "categories": "Categories",
+    "seeAll": "See All",
+    "recyclenow": "Recycle Now",
+    "scanDescription": "Scan the QR code from the weight scale to record your recycling deposit",
+    "btnScan": "Scan QR Code"
+  }
+}

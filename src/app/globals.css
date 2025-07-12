@@ -79,7 +79,7 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
-.dark {
+/* .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
@@ -111,7 +111,7 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
-}
+} */
 
 @layer base {
   * {
@@ -140,4 +140,39 @@
 input::placeholder {
   opacity: 1 !important;
   transition: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  background-color: transparent;
+  -webkit-text-fill-color: black !important;
+}
+
+@keyframes scanline {
+  0% {
+    top: 0%;
+    background: linear-gradient(
+      to top,
+      rgba(52, 211, 153, 0.25) 0%,
+      rgba(52, 211, 153, 0) 100%
+    );
+  }
+  50% {
+    top: 90%;
+  }
+  100% {
+    top: 0%;
+    background: linear-gradient(
+      to bottom,
+      rgba(52, 211, 153, 0.25) 0%,
+      rgba(52, 211, 153, 0) 100%
+    );
+  }
+}
+
+.animate-scanline {
+  animation: scanline 2s infinite ease-in-out;
 }

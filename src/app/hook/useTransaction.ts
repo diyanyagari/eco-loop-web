@@ -1,6 +1,7 @@
 import {
   fetchData
 } from "@/lib/api-helper";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 import { Transaction } from "@/types/transaction";
 import { useQuery } from "@tanstack/react-query";
 

@@ -6,6 +6,7 @@ import {
   updateData,
 } from "@/lib/api-helper";
 import { Bank } from "@/types/bank";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 
 // Fetch function
 const fetchBank = async (

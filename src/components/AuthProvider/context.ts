@@ -11,7 +11,7 @@ export interface UserInterface {
 }
 
 export interface UserDataContextProps {
-  user: UserInterface;
+  // user: UserInterface;
   // setUser: (e: React.SetStateAction<UserInterface>) => void;
 
   gLoading: boolean;

@@ -1,4 +1,4 @@
-interface PaginatedResponse<T> {
+export interface PaginatedResponse<T> {
   data: T[];
   message: string;
   success: boolean;

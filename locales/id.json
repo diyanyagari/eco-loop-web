@@ -1,0 +1,14 @@
+{
+  "greeting": "Halo",
+  "login": {
+    "title": "Masuk ke akun Anda",
+    "button": "Masuk"
+  },
+  "homepage": {
+    "categories": "Kategori",
+    "seeAll": "Lihat Semua",
+    "recyclenow": "Daur Ulang Sekarang",
+    "scanDescription": "Pindai kode QR dari timbangan untuk mencatat setoran daur ulang Anda",
+    "btnScan": "Pindai Kode QR"
+  }
+}

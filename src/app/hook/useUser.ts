@@ -4,6 +4,7 @@ import {
   fetchData,
   updateData,
 } from "@/lib/api-helper";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 import { Users } from "@/types/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 

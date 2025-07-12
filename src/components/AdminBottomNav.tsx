@@ -2,6 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cns } from "@/utils/class-merge";
 import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -20,36 +21,40 @@ export default function AdminBottomNav({
   const router = useRouter();
 
   return (
-    <div className="fixed bottom-0 left-0 w-full border-t shadow-md flex justify-around px-2 pt-2 pb-8">
+    <div className="fixed bottom-0 left-0 bg-white w-full border-t shadow-md flex justify-around px-2 pt-2 pb-8">
       <div className="w-full flex justify-around max-w-sm">
         {navItems?.map(({ name, icon: Icon, path }) => {
           const isActive = pathname === path;
 
           return (
-            <motion.div
+            <div
               key={path}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="flex flex-col items-center cursor-pointer"
               onClick={() => router.push(path)}
+              className="flex flex-col items-center cursor-pointer"
             >
-              <Button
-                variant={isActive ? "default" : "ghost"}
-                size="icon"
-                className="rounded-full p-2"
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className=""
               >
-                <Icon className="w-5 h-5" />
-              </Button>
+                <Button
+                  size="icon"
+                  className={cns(
+                    "flex h-full w-full flex-col items-center justify-center bg-white hover:bg-white",
+                    isActive ? "text-emerald-500" : "text-gray-400"
+                  )}
+                >
+                  <Icon className="w-5 h-5" />
+                </Button>
+              </motion.div>
               <span
                 className={`text-xs mt-1 ${
-                  isActive
-                    ? "text-primary font-medium"
-                    : "text-muted-foreground"
+                  isActive ? "text-emerald-500" : "text-gray-400"
                 }`}
               >
                 {name}
               </span>
-            </motion.div>
+            </div>
           );
         })}
       </div>

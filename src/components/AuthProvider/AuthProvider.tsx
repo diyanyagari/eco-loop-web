@@ -1,26 +1,29 @@
 "use client";
 
-import { fetchUserProfile } from "@/lib/auth";
-import { useSession } from "next-auth/react";
+// import { fetchUserProfile } from "@/lib/auth";
+// import { useSession } from "next-auth/react";
 import React from "react";
 import LoadingGlobal from "../LoadingGlobal";
-import { UserDataContextProvider, UserInterface } from "./context";
-import { useQuery } from "@tanstack/react-query";
+import { UserDataContextProvider } from "./context";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
+import { useGetProfile } from "@/shared/hooks/useGetProfile";
+// import { useQuery } from "@tanstack/react-query";
 
 interface UserDataProviderProps {
   children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: UserDataProviderProps) {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [gLoading, setGLoading] = React.useState(false);
-  const [user, setUser] = React.useState<UserInterface>({
-    id: "",
-    role: "",
-    name: "",
-    email: "",
-    nik: "",
-  });
+  // const [user, setUser] = React.useState<UserInterface>({
+  //   id: "",
+  //   role: "",
+  //   name: "",
+  //   email: "",
+  //   nik: "",
+  // });
 
   // React.useEffect(() => {
   //   const getUserData = async () => {
@@ -41,29 +44,41 @@ export function AuthProvider({ children }: UserDataProviderProps) {
   // }, [session]);
 
   // Fetch user profile using react-query (cached)
-  const { data: userData } = useQuery({
-    queryKey: ["userProfile", session?.token],
-    queryFn: async () => {
-      setGLoading(true);
-      const data = await fetchUserProfile(session?.token);
-      setGLoading(false);
-      return data;
-    },
-    enabled: !!session?.token,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-  });
+  // console.log('sesisissis', session?.token)
+  // const { data: userData } = useQuery({
+  //   queryKey: ["userProfile", session?.token],
+  //   queryFn: async () => {
+  //     setGLoading(true);
+  //     const data = await fetchUserProfile(session?.token);
+  //     setGLoading(false);
+  //     return data;
+  //   },
+  //   enabled: !!session?.token,
+  //   staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  // });
 
-  // Update state only if user data changes
+  // // Update state only if user data changes
+  // React.useEffect(() => {
+  //   if (userData && JSON.stringify(userData) !== JSON.stringify(user)) {
+  //     setUser(userData);
+  //   }
+  // }, [userData]);
+
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const token = session?.user.accessToken;
+  const { refetch } = useGetProfile(token, !!token);
+
   React.useEffect(() => {
-    if (userData && JSON.stringify(userData) !== JSON.stringify(user)) {
-      setUser(userData);
+    if (status === "authenticated" && token) {
+      refetch({ cancelRefetch: false });
     }
-  }, [userData]);
+  }, [pathname, token, status]);
 
   return (
     <UserDataContextProvider
       value={{
-        user,
+        // user,
         gLoading,
         setGLoading,
       }}
