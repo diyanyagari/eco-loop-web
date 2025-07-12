@@ -1,47 +1,91 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# ----------------------------------------
+# Node.js Dependencies
+# ----------------------------------------
+node_modules/
+.pnp
 .pnp.*
+package-lock.json
+yarn.lock
+bun.lockb
+
+# ----------------------------------------
+# Yarn (Berry)
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+!.yarnrc.yml
 
-# testing
-/coverage
+# ----------------------------------------
+# Bun
+.bun/
 
-# next.js
-/.next/
-/out/
+# ----------------------------------------
+# Next.js
+.next/
+out/
+.next.cache/
 
-# production
-/build
+# Build outputs
+build/
+dist/
+.cache/
 
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Ignore service worker and workbox files
+# ----------------------------------------
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# ----------------------------------------
+# Logs & Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# ----------------------------------------
+# Testing
+coverage/
+.vitest/
+jest.config.js
+jest.config.ts
+
+# ----------------------------------------
+# OS Files
+.DS_Store
+Thumbs.db
+
+# ----------------------------------------
+# IDEs & Editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ----------------------------------------
+# Misc
+*.pem
+*.log
+*.tmp
+*.local
+
+# ----------------------------------------
+# Vercel / Netlify
+.vercel/
+.netlify/
+
+# ----------------------------------------
+# Public Folder Service Workers
 /public/sw.js
-public/sw.js
 /public/workbox-*.js
-public/workbox-*.js
+
+# Optional: Ignore Turbo / Nx / Cache
+.turbo/
+nx-cache/
